@@ -29,7 +29,7 @@
 % fonts
 \renewcommand*{\namefont}{\fontsize{34}{36}\mdseries\upshape}
 \renewcommand*{\titlefont}{\LARGE\mdseries\slshape}
-\renewcommand*{\addressfont}{\normalsize\mdseries\slshape\small}
+\renewcommand*{\addressfont}{\small\mdseries\slshape}
 \renewcommand*{\quotefont}{\large\slshape}
 \renewcommand*{\sectionfont}{\Large\mdseries\upshape}
 \renewcommand*{\subsectionfont}{\large\mdseries\upshape}
@@ -53,7 +53,7 @@
 \newlength{\maincolumnwidth}
 \newlength{\doubleitemmaincolumnwidth}
 \newlength{\listitemsymbolwidth}
-\settowidth{\listitemsymbolwidth}{\listitemsymbol{}~}
+\settowidth{\listitemsymbolwidth}{\listitemsymbol}
 \newlength{\listitemmaincolumnwidth}
 \newlength{\listdoubleitemmaincolumnwidth}
 
@@ -65,11 +65,11 @@
   % listitem lengths
   \setlength{\listitemmaincolumnwidth}{\maincolumnwidth-\listitemsymbolwidth}%
   % doubleitem lengths
-  \setlength{\doubleitemmaincolumnwidth}{\maincolumnwidth-\hintscolumnwidth-\separatorcolumnwidth}%
+  \setlength{\doubleitemmaincolumnwidth}{\maincolumnwidth-\hintscolumnwidth-\separatorcolumnwidth-\separatorcolumnwidth}%
   \setlength{\doubleitemmaincolumnwidth}{0.5\doubleitemmaincolumnwidth}%
   % listdoubleitem lengths
-  \setlength{\listdoubleitemmaincolumnwidth}{\maincolumnwidth-\listitemsymbolwidth}%
-  \setlength{\listdoubleitemmaincolumnwidth}{0.475\listdoubleitemmaincolumnwidth}%
+  \setlength{\listdoubleitemmaincolumnwidth}{\maincolumnwidth-\listitemsymbolwidth-\separatorcolumnwidth-\listitemsymbolwidth}%
+  \setlength{\listdoubleitemmaincolumnwidth}{0.5\listdoubleitemmaincolumnwidth}%
   % fancyhdr lengths
   \renewcommand{\headwidth}{\textwidth}}
 
@@ -151,37 +151,42 @@
 \renewcommand*{\cvdoubleitem}[5][.25em]{%
  \cvitem[#1]{#2}{%
    \begin{minipage}[t]{\doubleitemmaincolumnwidth}#3\end{minipage}%
-   \hfill%
+   \hfill% fill of \separatorcolumnwidth
    \begin{minipage}[t]{\hintscolumnwidth}\raggedleft\hintfont{#4}\end{minipage}%
    \hspace*{\separatorcolumnwidth}%
    \begin{minipage}[t]{\doubleitemmaincolumnwidth}#5\end{minipage}}}
 
 \renewcommand*{\cvlistitem}[2][.25em]{%
-  \cvitem[#1]{}{\listitemsymbol~\begin{minipage}[t]{\listitemmaincolumnwidth}#2\end{minipage}}}
+  \cvitem[#1]{}{\listitemsymbol\begin{minipage}[t]{\listitemmaincolumnwidth}#2\end{minipage}}}
 
-\renewcommand*{\cvlistdoubleitem}[3][\listitemsymbol{}]{%
-  \cvitem[0pt]{}{#1~\begin{minipage}[t]{\listdoubleitemmaincolumnwidth}#2\end{minipage}%
-  \hfill%
+\renewcommand*{\cvlistdoubleitem}[3][.25em]{%
+  \cvitem[#1]{}{\listitemsymbol\begin{minipage}[t]{\listdoubleitemmaincolumnwidth}#2\end{minipage}%
+  \hfill% fill of \separatorcolumnwidth
   \ifthenelse{\equal{#3}{}}%
     {}%
-    {#1~\begin{minipage}[t]{\listdoubleitemmaincolumnwidth}#3\end{minipage}}}}
+    {\listitemsymbol\begin{minipage}[t]{\listdoubleitemmaincolumnwidth}#3\end{minipage}}}}
 
-\renewcommand*{\cventry}[6]{%
-  \cvitem{#1}{%
-    {\bfseries#2}%
-    \ifthenelse{\equal{#3}{}}{}{, {\slshape#3}}%
-    \ifthenelse{\equal{#4}{}}{}{, #4}%
+\renewcommand*{\cventry}[7][.25em]{%
+  \cvitem[#1]{#2}{%
+    {\bfseries#3}%
+    \ifthenelse{\equal{#4}{}}{}{, {\slshape#4}}%
     \ifthenelse{\equal{#5}{}}{}{, #5}%
+    \ifthenelse{\equal{#6}{}}{}{, #6}%
     .%
-    \ifx&#6&%
-      \else{\newline{}\begin{minipage}[t]{\linewidth}\small#6\end{minipage}}\fi%
-  }}%
+    \ifx&#7&%
+      \else{\newline{}\begin{minipage}[t]{\linewidth}\small#7\end{minipage}}\fi}}
 
-\renewcommand*{\cvitemwithcomment}[3]{%
-  \cvline{#1}{%
-    \begin{minipage}[t]{.225\maincolumnwidth}\textbf{#2}\end{minipage}%
-    \hfill%
-    \begin{minipage}[t]{0.725\maincolumnwidth}\raggedleft\footnotesize\itshape#3\end{minipage}}}
+\newbox{\cvitemwithcommentmainbox}
+\newlength{\cvitemwithcommentmainlength}
+\newlength{\cvitemwithcommentcommentlength}
+\renewcommand*{\cvitemwithcomment}[4][.25em]{%
+  \savebox{\cvitemwithcommentmainbox}{{\bfseries#3}}%
+  \setlength{\cvitemwithcommentmainlength}{\widthof{\usebox{\cvitemwithcommentmainbox}}}%
+  \setlength{\cvitemwithcommentcommentlength}{\maincolumnwidth-\separatorcolumnwidth-\cvitemwithcommentmainlength}%
+  \cvitem[#1]{#2}{%
+    \begin{minipage}[t]{\cvitemwithcommentmainlength}\textbf{#3}\end{minipage}%
+    \hfill% fill of \separatorcolumnwidth
+    \begin{minipage}[t]{\cvitemwithcommentcommentlength}\raggedleft\small\itshape#4\end{minipage}}}
 
 \renewenvironment{thebibliography}[1]%
   {%
