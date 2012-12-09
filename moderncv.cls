@@ -237,6 +237,12 @@
 % defines one's home page (optional)
 % usage: \homepage{<url>}
 \newcommand*{\homepage}[1]{\def\@homepage{#1}}
+% defines one's age (optional)
+% usage: \age{<age>}
+\newcommand*{\age}[1]{\def\@age{#1}}
+% defines one's nationality (optional)
+% usage: \age{<nationality>}
+\newcommand*{\nationality}[1]{\def\@nationality{#1}}
 % defines additional personal information (optional)
 % usage: \extrainfo{<text>}
 \newcommand*{\extrainfo}[1]{\def\@extrainfo{#1}}
